@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Obsidian Intake
+Comment=Safely open text files inside Obsidian Vault
+Exec=__HOME__/.local/bin/obsidian-intake-router %f
+Icon=obsidian-intake
+Terminal=false
+Type=Application
+MimeType=text/markdown;text/x-markdown;text/plain;
+Categories=Office;Utility;
+StartupNotify=true
+NoDisplay=false
