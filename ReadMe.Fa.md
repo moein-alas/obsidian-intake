@@ -73,7 +73,7 @@ Obsidian Intake دو بخش دارد و هر دو با یک دستور نصب م
 ### مرحله ۱ — کلون کردن مخزن
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/obsidian-intake.git
+git clone https://github.com/moein-alas/obsidian-intake.git
 cd obsidian-intake
 ```
 ### مرحله ۲ — اجرای نصب‌کننده
@@ -106,6 +106,8 @@ cd obsidian-intake
 ./installer/update.sh /path/to/YourVault
 ```
 
+آرگومان Vault اختیاری است؛ اگر حذف شود، از `~/.config/obsidian-intake/vault.conf` خوانده می‌شود.
+
 پایگاه داده و تنظیمات افزونه شما حفظ می‌شوند. پس از به‌روزرسانی، Obsidian را دوباره راه‌اندازی کنید.
 
 ### حذف نصب
@@ -113,6 +115,8 @@ cd obsidian-intake
 ```bash
 ./installer/uninstall.sh /path/to/YourVault
 ```
+
+آرگومان Vault اختیاری است؛ اگر حذف شود، از `~/.config/obsidian-intake/vault.conf` خوانده می‌شود.
 
 پایگاه داده، تنظیمات و کپی‌های مدیریت‌شده داخل Vault عمداً نگه داشته می‌شوند تا بعداً بتوانید بدون از دست دادن داده دوباره نصب کنید.
 
@@ -228,7 +232,7 @@ cd obsidian-intake
 
 - نام پوشه مدیریت‌شده (پیش‌فرض: `Not-Indexed`)
 - نام پوشه Deleted-Notes (پیش‌فرض: `Deleted-Notes`)
-- پسوندهای مدیریت‌شده (لیست چک‌باکس + پسوندهای سفارشی متنی)
+- پسوندهای مدیریت‌شده (لیست چک‌باکس + پسوندهای سفارشی متنی؛ پیش‌فرض: `md`، `txt`، `yaml`، `json`، `csv`، `log`)
 - مقدار و واحد زمان نگهداری Deleted-Notes
 - مطالعه موقت به‌طور پیش‌فرض
 - نوشتن مسیر منبع هنگام ورود
@@ -242,8 +246,7 @@ cd obsidian-intake
 
 ## 🏗 معماری
 
-text
-
+```text
 Obsidian-Intake
 │
 ├── extension/
@@ -257,7 +260,9 @@ Obsidian-Intake
 │   ├── hashing.py               هویت SHA-256
 │   ├── header.py                هدر مسیر منبع اختیاری Markdown
 │   ├── sync.py                  موتور همگام‌سازی خارجی ↔ Vault
-│   └── migration.py             انتقال دائم + حل تعارض
+│   ├── migration.py             انتقال دائم + حل تعارض
+│   ├── obsidian-intake-router   اسکریپت لانچر (لینک نمادین به ~/.local/bin)
+│   └── test_router.py           مجموعه تست‌های سرتاسری روتر
 │
 ├── database/
 │   └── schema.sql               طرح‌واره مرجع
@@ -265,10 +270,15 @@ Obsidian-Intake
 ├── installer/
 │   ├── install.sh
 │   ├── update.sh
-│   └── uninstall.sh
+│   ├── uninstall.sh
+│   └── obsidian-intake.desktop  ورودی دسکتاپ (در زمان نصب ثبت می‌شود)
+│
+├── icons/
+│   └── obsidian-intake.svg      آیکون برنامه برای ورودی دسکتاپ
 │
 └── docs/
     └── Architecture.md
+```
 
 ### نحوه ارتباط دو نیمه
 
@@ -378,4 +388,4 @@ vault-renamed <old> <new>     همگام‌سازی تغییر نام دستی V
 
 ## 📄 مجوز
 
-متن کامل را در فایل `LICENSE` در مخزن ببینید.
+متن کامل را در فایل `LICENSE.txt` در مخزن ببینید.

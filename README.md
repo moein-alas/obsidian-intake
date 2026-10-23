@@ -9,7 +9,7 @@ Obsidian is built around a single folder (the Vault). It expects every file to b
 
 Obsidian Intake was created around three ideas:
 
-1. **The Vault is a managed space, not a dumpster.** External files should not permanently clutter it. They enter a staging area (`not-indexed`), and from there they either become a permanent part of the Vault or leave cleanly.
+1. **The Vault is a managed space, not a dumpster.** External files should not permanently clutter it. They enter a staging area (`Not-Indexed`), and from there they either become a permanent part of the Vault or leave cleanly.
 2. **Files have identity, not just content.** Every managed file has a stable record: original path, vault path, hashes, size, lifecycle state and a complete event history. Two files with the same content are the same file — no accidental duplicates.
 3. **Nothing destructive happens silently.** Deleting an external source, entering Deleted-Notes, or overwriting one side of a file are all reversible, logged and protected by hash verification.
 
@@ -22,13 +22,13 @@ External file (outside the Vault)
         │
         │  first managed open
         ▼
-not-indexed/                 ← managed copy inside the Vault
+Not-Indexed/                 ← managed copy inside the Vault
         │
         │  "Temporary read" checked + last view closes
         ▼
 Deleted-Notes/               ← countdown to auto-deletion starts
         │
-        ├── Restore / external re-open  ──►  back to not-indexed/
+        ├── Restore / external re-open  ──►  back to Not-Indexed/
         │
         └── Retention expires           ──►  purged automatically
 ```
@@ -89,7 +89,7 @@ This will:
 - Write the Vault path to `~/.config/obsidian-intake/vault.conf`.
 - Install the extension into `<Vault>/.obsidian/plugins/obsidian-intake/`.
 - Register the desktop entry and MIME types so external files open through Obsidian Intake.
-- Create the `not-indexed/` folder inside your Vault.
+- Create the `Not-Indexed/` folder inside your Vault.
 
 ### Step 3 — Enable the extension inside Obsidian
 
@@ -109,6 +109,8 @@ Only after this step will the banner, dashboard, settings panel and Deleted-Note
 ./installer/update.sh /path/to/YourVault
 ```
 
+The Vault argument is optional; if omitted, it is read from `~/.config/obsidian-intake/vault.conf`.
+
 The database and your plugin settings are preserved. Restart Obsidian after updating.
 
 ### Uninstalling
@@ -117,6 +119,8 @@ The database and your plugin settings are preserved. Restart Obsidian after upda
 ./installer/uninstall.sh /path/to/YourVault
 ```
 
+The Vault argument is optional; if omitted, it is read from `~/.config/obsidian-intake/vault.conf`.
+
 The database, configuration and managed copies inside the Vault are intentionally kept, so you can reinstall later without losing data.
 
 ---
@@ -124,7 +128,7 @@ The database, configuration and managed copies inside the Vault are intentionall
 
 ### 📥 External File Intake
 
-- Imports files from outside the Vault into the managed `not-indexed/` folder.
+- Imports files from outside the Vault into the managed `Not-Indexed/` folder.
 - Keeps a durable link between the original external path and the Vault copy.
 - Only files whose extensions are in the managed list are intercepted. All other files open normally through their default OS application — the plugin never blocks them, but it **notifies** the user that the format is outside the managed list.
 - Supports any extension the user adds, including `.org`, `.py`, `.ipynb`, `.rmd` and similar — though non-native formats still need an Obsidian plugin capable of opening them.
@@ -154,7 +158,7 @@ The database, configuration and managed copies inside the Vault are intentionall
 
 When an external file is re-opened while its managed copy is sitting in Deleted-Notes:
 
-1. The copy is restored back to `not-indexed/`.
+1. The copy is restored back to `Not-Indexed/`.
 2. If the retained copy and the external original **differ**, a `recovery_pending` state is created instead of silently overwriting either side.
 3. A highlighted **unified line diff** is shown in the document banner (green for additions, red for removals), using Python's `difflib`.
 4. The user decides:
@@ -177,7 +181,7 @@ When an external file is re-opened while its managed copy is sitting in Deleted-
 - **Folder suggest modal** for "Move to…" that fuzzy-searches all Vault folders.
 - **Confirmation modal** for destructive actions (delete external, purge now).
 - **Status bar item** showing the tracked file count and live conflict count.
-- **Graph exclusion** — automatically adds `not-indexed/` to Obsidian's excluded-files list so managed copies do not pollute the graph or search.
+- **Graph exclusion** — automatically adds `Not-Indexed/` to Obsidian's excluded-files list so managed copies do not pollute the graph or search.
 - **Scroll-to-top / scroll-to-bottom** floating buttons that target the real scroll container of the active view (works across themes and view types).
     
 
@@ -228,9 +232,9 @@ Some formats (non-native extensions) may not be openable by Obsidian at all. To 
 ### ⚙️ Configuration Options
 
 All available in **Settings → Obsidian Intake**:
-- Managed folder name (default: `not-indexed`)
+- Managed folder name (default: `Not-Indexed`)
 - Deleted-Notes folder name (default: `Deleted-Notes`)
-- Managed extensions (checkbox list + free-text custom extensions)
+- Managed extensions (checkbox list + free-text custom extensions; defaults: `md`, `txt`, `yaml`, `json`, `csv`, `log`)
 - Deleted-Notes retention value + unit
 - Temporary read by default
 - Write source path on import
@@ -257,7 +261,9 @@ Obsidian-Intake
 │   ├── hashing.py               SHA-256 identity
 │   ├── header.py                Optional Markdown source-path header
 │   ├── sync.py                  External ↔ Vault synchronization engine
-│   └── migration.py             Permanent move + conflict resolution
+│   ├── migration.py             Permanent move + conflict resolution
+│   ├── obsidian-intake-router   launcher script (symlinked to ~/.local/bin)
+│   └── test_router.py           end-to-end router test suite
 │
 ├── database/
 │   └── schema.sql               Reference schema
@@ -265,7 +271,11 @@ Obsidian-Intake
 ├── installer/
 │   ├── install.sh
 │   ├── update.sh
-│   └── uninstall.sh
+│   ├── uninstall.sh
+│   └── obsidian-intake.desktop  desktop entry (registered during install)
+│
+├── icons/
+│   └── obsidian-intake.svg      application icon used by the desktop entry
 │
 └── docs/
     └── Architecture.md
@@ -373,4 +383,4 @@ Potential future improvements:
 ---
 ## 📄 License
 
-See the `LICENSE` file in the repository for the full text.
+See the `LICENSE.txt` file in the repository for the full text.
